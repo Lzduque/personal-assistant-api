@@ -7,6 +7,7 @@ import Lib
 import Greeting (greeting)
 import Weather (weather)
 import System.Environment (lookupEnv)
+import Data.Time (getZonedTime)
 
 main :: IO ()
 main = do
@@ -22,8 +23,9 @@ main = do
     get "/greeting" $ do
         liftIO $ putStrLn "HI!!!!"
         -- liftIO takes greeting outside its Monad and puts it into the main Monad
-        greet <- liftIO $ greeting
+        timeNow <- liftIO $ getZonedTime
+        let greet = greeting timeNow
         json greet
     get "/weather" $ do
         liftIO $ putStrLn "Sunny day!!"
-        json weather
+        json weather 
