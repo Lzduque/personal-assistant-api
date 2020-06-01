@@ -5,12 +5,21 @@ import Control.Monad.IO.Class (liftIO)
 
 import Lib
 import Greeting (greeting)
+import System.Environment (lookupEnv)
 
 main :: IO ()
 main = do
-  scotty 3000 $ do
+  mport <- lookupEnv "PORT"
+  let 
+    port = case mport of
+      Just p -> read p :: Int
+      Nothing -> 3000
+    origin = case mport of
+      Just _ -> "https://lzduque.github.io"
+      Nothing -> "http://localhost:3000"
+  scotty port $ do
     get "/greeting" $ do
         liftIO $ putStrLn "HI!!!!"
-        -- html "This was a GET request!"  -- send 'text/html' response
+        -- liftIO takes greeting outside its Monad and puts it into the main Monad
         greet <- liftIO $ greeting
         json greet
