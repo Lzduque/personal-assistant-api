@@ -5,6 +5,7 @@ import Control.Monad.IO.Class (liftIO)
 
 import Lib
 import Greeting (greeting)
+import Weather (weather)
 import System.Environment (lookupEnv)
 
 main :: IO ()
@@ -23,3 +24,6 @@ main = do
         -- liftIO takes greeting outside its Monad and puts it into the main Monad
         greet <- liftIO $ greeting
         json greet
+    get "/weather" $ do
+        liftIO $ putStrLn "Sunny day!!"
+        json weather
