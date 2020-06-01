@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c63a9136735c30cf4248bc23e56bc227a8bf1bd692fa9dcdc7b40d9ce1af6d21
+-- hash: 8b321ba3ac09793fa418a6a979f29b1221e0f72817ed9e83991d8502a387bf71
 
 name:           personal-assistant-api
 version:        0.1.0.0
@@ -29,6 +29,7 @@ library
   exposed-modules:
       Greeting
       Lib
+      Weather
   other-modules:
       Paths_personal_assistant_api
   hs-source-dirs:
@@ -36,6 +37,8 @@ library
   default-extensions: OverloadedStrings DeriveGeneric DeriveAnyClass RecordWildCards NamedFieldPuns MultiWayIf
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , http-conduit
     , split
     , time
   default-language: Haskell2010
@@ -50,6 +53,8 @@ executable personal-assistant-api-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , http-conduit
     , personal-assistant-api
     , scotty
     , split
@@ -67,7 +72,9 @@ test-suite personal-assistant-api-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , hspec
+    , http-conduit
     , personal-assistant-api
     , split
     , time
