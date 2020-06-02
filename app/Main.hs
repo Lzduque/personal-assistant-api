@@ -5,13 +5,17 @@ import Control.Monad.IO.Class (liftIO)
 
 import Lib
 import Greeting (greeting)
-import Weather (weather)
+import Weather (apiRequest)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
+import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody, parseRequest)
+import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString.Char8 as BC
 
 main :: IO ()
 main = do
   mport <- lookupEnv "PORT"
+  mapiKey <- lookupEnv "OPEN_WEATHER_API_KEY"
   let 
     port = case mport of
       Just p -> read p :: Int
@@ -19,6 +23,9 @@ main = do
     origin = case mport of
       Just _ -> "https://lzduque.github.io"
       Nothing -> "http://localhost:3000"
+    apiKey = case mapiKey of
+      Just k -> BC.pack k
+      Nothing -> ""
   scotty port $ do
     get "/greeting" $ do
         liftIO $ putStrLn "HI!!!!"
@@ -28,4 +35,20 @@ main = do
         json greet
     get "/weather" $ do
         liftIO $ putStrLn "Sunny day!!"
-        json weather 
+        liftIO $ putStrLn $ show apiKey
+        -- initReq <- parseRequest apiRequest
+        -- let req = initReq
+        -- liftIO $ print req
+        response <- httpLBS $ apiRequest apiKey
+        
+        let status = getResponseStatusCode response
+        liftIO $ print $ apiRequest apiKey
+        if status == 200
+          then do
+              liftIO $ print "saving request to file"
+              let jsonBody = getResponseBody response
+              liftIO $ L.writeFile "data.json" jsonBody
+          else 
+              liftIO $ print "request failed with error"
+
+        -- json weather 
