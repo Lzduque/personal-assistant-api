@@ -1,10 +1,7 @@
 module Weather (apiRequest) where
 
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-import qualified Data.ByteString.Lazy as L
-import qualified Data.ByteString.Lazy.Char8 as LC
-import Network.HTTP.Simple (setRequestMethod, setRequestHost, setRequestHeader, setRequestPath, setRequestSecure, setRequestPort, defaultRequest, setRequestQueryString, Request, QueryItem)
+import Network.HTTP.Simple (setRequestMethod, setRequestHost, setRequestPath, setRequestSecure, defaultRequest, setRequestQueryString, Request, QueryItem)
 
 -- weather ::
 weather = undefined

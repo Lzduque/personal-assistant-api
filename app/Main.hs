@@ -1,14 +1,13 @@
 module Main where
 
-import Web.Scotty (scotty, get, json, html)
+import Web.Scotty (scotty, get, json)
 import Control.Monad.IO.Class (liftIO)
 
-import Lib
 import Greeting (greeting)
 import Weather (apiRequest)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
-import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody, parseRequest)
+import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
 

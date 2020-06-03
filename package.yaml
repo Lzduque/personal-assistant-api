@@ -60,3 +60,10 @@ default-extensions:
   - RecordWildCards
   - NamedFieldPuns
   - MultiWayIf
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wredundant-constraints

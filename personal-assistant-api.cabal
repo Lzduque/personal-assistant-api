@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8b321ba3ac09793fa418a6a979f29b1221e0f72817ed9e83991d8502a387bf71
+-- hash: 1074155e96fead1471205b52891933247da8a78ea1821ac586267dc8ced1934a
 
 name:           personal-assistant-api
 version:        0.1.0.0
@@ -35,6 +35,7 @@ library
   hs-source-dirs:
       src
   default-extensions: OverloadedStrings DeriveGeneric DeriveAnyClass RecordWildCards NamedFieldPuns MultiWayIf
+  ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
     , bytestring
@@ -50,7 +51,7 @@ executable personal-assistant-api-exe
   hs-source-dirs:
       app
   default-extensions: OverloadedStrings DeriveGeneric DeriveAnyClass RecordWildCards NamedFieldPuns MultiWayIf
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , bytestring
@@ -69,7 +70,7 @@ test-suite personal-assistant-api-test
   hs-source-dirs:
       test
   default-extensions: OverloadedStrings DeriveGeneric DeriveAnyClass RecordWildCards NamedFieldPuns MultiWayIf
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , bytestring
