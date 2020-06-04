@@ -4,17 +4,18 @@ import Web.Scotty (scotty, get, json)
 import Control.Monad.IO.Class (liftIO)
 
 import Greeting (greeting)
-import Weather (apiRequest)
+import Weather (weatherMsg, apiRequest, WeatherInfo)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
 import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
+import Data.Aeson (eitherDecode)
 
 
 
 userLocal :: BC.ByteString
-userLocal = "London,uk"
+userLocal = "Toronto,CA"
 
 main :: IO ()
 main = do
@@ -39,12 +40,11 @@ main = do
         json greet
     get "/weather" $ do
         liftIO $ putStrLn "Sunny day!!"
-        liftIO $ putStrLn $ show apiKey
+        -- liftIO $ putStrLn $ show apiKey
         -- initReq <- parseRequest apiRequest
         -- let req = initReq
         -- liftIO $ print req
         response <- httpLBS $ apiRequest apiKey userLocal
-        
         let status = getResponseStatusCode response
         liftIO $ print $ apiRequest apiKey userLocal
         if status == 200
@@ -52,7 +52,15 @@ main = do
               liftIO $ print "saving request to file"
               let jsonBody = getResponseBody response
               liftIO $ L.writeFile "data.json" jsonBody
+              let decodedStr = eitherDecode jsonBody :: Either String WeatherInfo
+              case decodedStr of
+                Right weatherInfo -> do
+                  liftIO $ putStrLn "weather inside decodedstr"
+                  case weatherMsg weatherInfo of
+                    Left err -> do
+                      json $ err
+                    Right info -> do
+                      json $ info
+                Left err -> json err
           else 
               liftIO $ print "request failed with error"
-
-        -- json weather 

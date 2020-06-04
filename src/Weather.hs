@@ -86,6 +86,28 @@ data WeatherInfo =
 
 
 
+recommendation :: Float -> Float -> String -> String
+recommendation minTemp maxTemp dayDescription
+    | minTemp >= 20 && maxTemp >=25 && dayDescription == "clear sky" = "Don't forget your sunglasses and sunscreen!"
+    | minTemp >= 20 && maxTemp >=25 && dayDescription == "few clouds" = "Don't forget your sunglasses and sunscreen!"
+    | "rain" `isInfixOf` dayDescription = "Don't forget your umbrella!"
+    | otherwise = "Have a nice day!"
+
+weatherMsg :: WeatherInfo -> Either String String
+weatherMsg  weatherInfo
+    | dayDescription == "" = Left "Day description is an empty string."
+    | city == "" = Left "City is an empty string."
+    | minTemp == "" = Left "Min Temperature is an empty string."
+    | maxTemp == "" = Left "Max Temperature is an empty string."
+    | recommendationMsg == "" = Left "Recommendation is an empty string."
+    | otherwise = Right $ "Today there will be " ++ dayDescription ++ " in " ++ city ++ "! The temperature is going from " ++ minTemp ++ "C to " ++ maxTemp ++ "C. " ++ recommendationMsg
+    where
+        dayDescription = description . head . weather $ weatherInfo
+        city = name $ weatherInfo
+        minTemp = show . round . temp_min . main $ weatherInfo
+        maxTemp = show . round . temp_max . main $ weatherInfo
+        recommendationMsg = recommendation (read $ minTemp :: Float) (read $ maxTemp :: Float) dayDescription
+
 apiHost :: BC.ByteString
 apiHost = "api.openweathermap.org"
 
