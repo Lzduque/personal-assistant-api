@@ -100,7 +100,7 @@ weatherMsg  weatherInfo
     | minTemp == "" = Left "Min Temperature is an empty string."
     | maxTemp == "" = Left "Max Temperature is an empty string."
     | recommendationMsg == "" = Left "Recommendation is an empty string."
-    | otherwise = Right $ "Today there will be " ++ dayDescription ++ " in " ++ city ++ "! The temperature is going from " ++ minTemp ++ "C to " ++ maxTemp ++ "C. " ++ recommendationMsg
+    | otherwise = Right $ "Today there will be " ++ dayDescription ++ " in " ++ city ++ "! The temperature is going from " ++ minTemp ++ "°C to " ++ maxTemp ++ "°C. " ++ recommendationMsg
     where
         dayDescription = description . head . weather $ weatherInfo
         city = name $ weatherInfo
