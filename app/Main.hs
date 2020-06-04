@@ -11,6 +11,11 @@ import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
 
+
+
+userLocal :: BC.ByteString
+userLocal = "London,uk"
+
 main :: IO ()
 main = do
   mport <- lookupEnv "PORT"
@@ -38,10 +43,10 @@ main = do
         -- initReq <- parseRequest apiRequest
         -- let req = initReq
         -- liftIO $ print req
-        response <- httpLBS $ apiRequest apiKey
+        response <- httpLBS $ apiRequest apiKey userLocal
         
         let status = getResponseStatusCode response
-        liftIO $ print $ apiRequest apiKey
+        liftIO $ print $ apiRequest apiKey userLocal
         if status == 200
           then do
               liftIO $ print "saving request to file"

@@ -12,9 +12,9 @@ apiHost = "api.openweathermap.org"
 apiPath :: BC.ByteString
 apiPath = "/data/2.5/weather"
 
-apiQuery :: BC.ByteString -> [QueryItem]
-apiQuery key = 
-    [ ("id", Just "6087824")
+apiQuery :: BC.ByteString -> BC.ByteString -> [QueryItem]
+apiQuery key local = 
+    [ ("q", Just local)
     , ("appid", Just key)
     , ("units", Just "metric")
     ]
@@ -27,13 +27,15 @@ buildRequest query host method path = setRequestMethod method
                                 $ setRequestSecure False
                                 $ defaultRequest
 
-apiRequest :: BC.ByteString -> Request
-apiRequest key = buildRequest (apiQuery key) apiHost "GET" apiPath
+apiRequest :: BC.ByteString -> BC.ByteString -> Request
+apiRequest key local = buildRequest (apiQuery key local) apiHost "GET" apiPath
 
 
+-- api.openweathermap.org/data/2.5/weather?q={city name},{state code},{country code}&appid={your api key}&units=metric
 -- api.openweathermap.org/data/2.5/weather?id={city id}&appid={your api key}&units=metric
 -- Toronto id -> 6087824
 -- request:
+-- http://api.openweathermap.org/data/2.5/weather?id=6087824&appid=cc0e99f5f6971474f1bafc6aba7d963c
 -- Request {
 --   host                 = "api.openweathermap.org"
 --   port                 = 80
@@ -49,51 +51,48 @@ apiRequest key = buildRequest (apiQuery key) apiHost "GET" apiPath
 --   requestVersion       = HTTP/1.1
 -- }
 
-
 -- response:
--- {
---   "coord": {
---     "lon": -79.51,
---     "lat": 43.6
---   },
---   "weather": [
---     {
---       "id": 800,
---       "main": "Clear",
---       "description": "clear sky",
---       "icon": "01d"
+-- {"coord":
+--     {"lon":-0.13
+--     ,"lat":51.51
 --     }
---   ],
---   "base": "stations",
---   "main": {
---     "temp": 21.14,
---     "feels_like": 19.12,
---     "temp_min": 19,
---     "temp_max": 23,
---     "pressure": 1009,
---     "humidity": 63
---   },
---   "visibility": 14484,
---   "wind": {
---     "speed": 4.6,
---     "deg": 170
---   },
---   "clouds": {
---     "all": 1
---   },
---   "dt": 1591123561,
---   "sys": {
---     "type": 1,
---     "id": 941,
---     "country": "CA",
---     "sunrise": 1591090743,
---     "sunset": 1591145612
---   },
---   "timezone": -14400,
---   "id": 6087824,
---   "name": "New Toronto",
---   "cod": 200
--- }
+--     ,"weather":[
+--         {"id":803
+--         ,"main":"Clouds"
+--         ,"description":"broken clouds"
+--         ,"icon":"04d"
+--         }]
+--     ,"base":"stations"
+--     ,"main":
+--         {"temp":14.55
+--         ,"feels_like":9.34
+--         ,"temp_min":13.33
+--         ,"temp_max":16.67
+--         ,"pressure":1001
+--         ,"humidity":51
+--         }
+--     ,"visibility":10000
+--     ,"wind":
+--         {"speed":5.7
+--         ,"deg":300
+--         }
+--     ,"clouds":
+--         {"all":75
+--         }
+--     ,"dt":1591288110
+--     ,"sys":
+--         {"type":1
+--         ,"id":1414
+--         ,"country":"GB"
+--         ,"sunrise":1591242405
+--         ,"sunset":1591301482
+--         }
+--     ,"timezone":3600
+--     ,"id":2643743
+--     ,"name":"London"
+--     ,"cod":200
+--     }
+
 -- getResponseStatusCode <$> response
 
 -- to consult we get the city id, from the table
