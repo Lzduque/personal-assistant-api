@@ -1,10 +1,90 @@
-module Weather (apiRequest) where
+module Weather (weatherMsg, apiRequest, WeatherInfo) where
 
 import qualified Data.ByteString.Char8 as BC
 import Network.HTTP.Simple (setRequestMethod, setRequestHost, setRequestPath, setRequestSecure, defaultRequest, setRequestQueryString, Request, QueryItem)
+import Data.Aeson (FromJSON,ToJSON,parseJSON,withObject,(.:))
+import GHC.Generics (Generic)
+import Data.List (isInfixOf)
 
--- weather ::
-weather = undefined
+data Coord =
+  Coord
+  { lon :: Float
+  , lat :: Float
+  } deriving (Show, Generic, Eq, ToJSON, FromJSON)
+
+data Weather =
+  Weather
+  { weatherId :: Int
+  , weatherMain :: String
+  , description :: String
+  , icon :: String
+  } deriving (Show, Generic, Eq, ToJSON)
+
+instance FromJSON Weather where 
+  parseJSON = withObject "Weather" $ \weather -> do
+    weatherId <- weather .: "id"
+    weatherMain   <- weather .: "main"
+    description   <- weather .: "description"
+    icon <- weather .: "icon"
+    return Weather{..}
+
+data Main =
+  Main
+  { temp :: Float
+  , feels_like :: Float
+  , temp_min :: Float
+  , temp_max :: Float
+  , pressure :: Int
+  , humidity :: Int
+  } deriving (Show, Generic, Eq, ToJSON, FromJSON)
+
+data Wind =
+  Wind
+  { speed :: Float
+  , deg :: Int
+  } deriving (Show, Generic, Eq, ToJSON, FromJSON)
+
+data Clouds =
+  Clouds
+  { all :: Int
+  } deriving (Show, Generic, Eq, ToJSON, FromJSON)
+
+data Sys =
+  Sys
+  { sysType :: Int
+  , sysId :: Int
+  , country :: String
+  , sunrise :: Int
+  , sunset :: Int
+  } deriving (Show, Generic, Eq, ToJSON)
+
+instance FromJSON Sys where 
+  parseJSON = withObject "Sys" $ \sy -> do
+    sysType <- sy .: "type"
+    sysId   <- sy .: "id"
+    country <- sy .: "country"
+    sunrise <- sy .: "sunrise"
+    sunset  <- sy .: "sunset"
+    return Sys{..}
+
+data WeatherInfo =
+  WeatherInfo
+  { coord   :: Coord
+  , weather :: [Weather]
+  , base    :: String
+  , main    :: Main         
+  , visibility  :: Int
+  , wind    :: Wind
+  , clouds  :: Clouds
+  , dt  :: Int
+  , sys :: Sys
+  , timezone    :: Int
+  , id  :: Int
+  , name    :: String
+  , cod :: Int
+  } deriving (Show, Generic, Eq, ToJSON, FromJSON)
+
+
 
 apiHost :: BC.ByteString
 apiHost = "api.openweathermap.org"

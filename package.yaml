@@ -25,6 +25,7 @@ dependencies:
 - time
 - bytestring
 - http-conduit
+- aeson >= 1.4.6.0
 
 library:
   source-dirs: src
