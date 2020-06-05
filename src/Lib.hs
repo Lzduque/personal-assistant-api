@@ -16,4 +16,4 @@ userId = "id_001"
 -- dateToday = getCurrentTime >>= return . toGregorian . utctDay
 
 dateFromTime :: ZonedTime -> String
-dateFromTime timeNow = formatTime defaultTimeLocale "%Y-%m-%d" timeNow
+dateFromTime time = formatTime defaultTimeLocale "%Y-%m-%d" time
