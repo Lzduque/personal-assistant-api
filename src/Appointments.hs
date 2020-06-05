@@ -1,10 +1,11 @@
-module Appointments (appointmentsMsg) where
+module Appointments (appointmentsMsg, Appointment(..)) where
 
 import Data.Aeson (FromJSON,ToJSON)
 import GHC.Generics (Generic)
 import Data.Time (ZonedTime)
 import Data.List (intercalate)
 
+import Lib (dateFromTime)
 
 data Appointment =
   Appointment
@@ -16,33 +17,24 @@ data Appointment =
 
 
 
-appointments :: ZonedTime -> [Appointment]
-appointments day = [
-    Appointment
-        { userID = "id_001"
-        , name = "Family Doctor"
-        , date = "2020-06-05"
-        , time = "13:30"
-        },
-    Appointment
-        { userID = "id_001"
-        , name = "Pick up medicine"
-        , date = "2020-06-05"
-        , time = "15:00"
-        }
-    ]
+appointmentsForDay :: [Appointment] -> ZonedTime -> [Appointment]
+appointmentsForDay appointments timeNow = filter (\a -> (date $ a) == day) appointments
+    where
+        day = dateFromTime timeNow
 
 formatAppointment :: Appointment -> String
 formatAppointment a = (name $ a) ++ " at " ++ (time $ a)
 
-appointmentsMsg :: ZonedTime -> String
-appointmentsMsg day
+appointmentsMsg :: [Appointment] -> ZonedTime -> String
+appointmentsMsg allAppointments timeNow
     | numOfAppointments == 0 = "Today you have no external appointments scheduled!"
     | otherwise = "Today you have " ++ (show $ numOfAppointments) ++ " appointment(s): " ++ as ++ "."
     where
-        dayAppointments = appointments day 
+        dayAppointments = appointmentsForDay allAppointments timeNow 
         numOfAppointments = length dayAppointments
         as = intercalate ", " $ map formatAppointment dayAppointments
+
+
 
 -- Appointments for theis user, for today
 -- %R

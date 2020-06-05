@@ -1,4 +1,4 @@
-module Lib (userName, userId, dateToday) where
+module Lib (userName, userId, dateFromTime) where
 
 import Data.Time.Clock (getCurrentTime, utctDay)
 import Data.Time.Calendar (toGregorian)
@@ -15,5 +15,5 @@ userId = "id_001"
 -- dateToday :: IO (Integer, Int, Int) -- :: (year, month, day)
 -- dateToday = getCurrentTime >>= return . toGregorian . utctDay
 
-dateToday :: ZonedTime -> String
-dateToday timeNow = read (formatTime defaultTimeLocale "%Y-%m-%d" timeNow) :: String
+dateFromTime :: ZonedTime -> String
+dateFromTime timeNow = formatTime defaultTimeLocale "%Y-%m-%d" timeNow

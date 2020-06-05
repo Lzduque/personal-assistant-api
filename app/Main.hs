@@ -11,12 +11,32 @@ import Data.Aeson (eitherDecode)
 
 import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
-import Appointments (appointmentsMsg)
-import Lib (dateToday) 
+import Appointments (appointmentsMsg, Appointment(..))
 
 
 userLocal :: BC.ByteString
 userLocal = "Toronto,CA"
+
+allAppointments :: [Appointment]
+allAppointments = [ Appointment
+                                { userID = "id_001"
+                                , name = "Family Doctor"
+                                , date = "2020-06-05"
+                                , time = "13:30"
+                                }
+                            , Appointment
+                                { userID = "id_001"
+                                , name = "Pick up medicine"
+                                , date = "2020-06-05"
+                                , time = "15:00"
+                                }
+                            , Appointment
+                                { userID = "id_001"
+                                , name = "Get package from post office"
+                                , date = "2020-06-07"
+                                , time = "10:00"
+                                }
+                            ]
 
 main :: IO ()
 main = do
@@ -56,7 +76,7 @@ main = do
               let decodedStr = eitherDecode jsonBody :: Either String WeatherInfo
               case decodedStr of
                 Right weatherInfo -> do
-                  liftIO $ putStrLn "weather inside decodedstr"
+                  liftIO $ putStrLn $ show weatherInfo
                   case weatherMsg weatherInfo of
                     Left err -> do
                       json $ err
@@ -72,7 +92,7 @@ main = do
       if day == "today"
         then do
           timeNow <- liftIO $ getZonedTime
-          let appointments = appointmentsMsg timeNow
+          let appointments = appointmentsMsg allAppointments timeNow
           json appointments
       else
         liftIO $ print "request failed with error"

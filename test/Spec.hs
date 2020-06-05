@@ -1,10 +1,12 @@
 import Greeting (greeting)
+import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather(..), Wind(..), Clouds(..), Sys(..))
+import Appointments (appointmentsMsg, Appointment(..))
+
 
 import Test.Hspec
 import Data.Fixed (Pico(..))
 import Data.Time (UTCTime(..), fromGregorian, timeOfDayToTime, TimeOfDay(..), getCurrentTimeZone, getCurrentTime, utcToZonedTime, TimeZone(..))
 import Control.Monad.IO.Class (liftIO)
-import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather(..), Wind(..), Clouds(..), Sys(..))
 
 
 
@@ -66,6 +68,28 @@ testWeatherInfo =
         , cod = 200
         }
 
+testAppointments = [
+    Appointment
+        { userID = "id_001"
+        , name = "Family Doctor"
+        , date = "2020-06-05"
+        , time = "13:30"
+        },
+    Appointment
+        { userID = "id_001"
+        , name = "Pick up medicine"
+        , date = "2020-06-05"
+        , time = "15:00"
+        }, 
+    Appointment
+        { userID = "id_001"
+        , name = "Get package from post office"
+        , date = "2020-06-07"
+        , time = "10:00"
+        }
+    ]
+
+
 
 main :: IO ()
 main = hspec $ do
@@ -96,3 +120,17 @@ main = hspec $ do
     it "returns an error message for a city and the day given a weather info" $ do
         let weatherInfo = weatherMsg emptyCity
         weatherInfo `shouldBe` Left "City is an empty string."
+  describe "appointmentsMsg" $ do
+    it "returns the appointments message for an user and a day" $ do
+        let time = mkUTCTime (2020,6,5) (12, 0, 0)
+        let timeZone = edtTimeZone
+        let timeNow = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg testAppointments timeNow
+        appointments `shouldBe` "Today you have 2 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00."
+  describe "appointmentsMsg" $ do
+    it "returns the appointments message for an user and a day" $ do
+        let time = mkUTCTime (2020,6,6) (12, 0, 0)
+        let timeZone = edtTimeZone
+        let timeNow = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg testAppointments timeNow
+        appointments `shouldBe` "Today you have no external appointments scheduled!"
