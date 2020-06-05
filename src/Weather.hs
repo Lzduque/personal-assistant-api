@@ -79,7 +79,7 @@ data WeatherInfo =
   , dt  :: Int
   , sys :: Sys
   , timezone    :: Int
-  , id  :: Int
+  , cityId  :: Int
   , name    :: String
   , cod :: Int
   } deriving (Show, Generic, Eq, ToJSON)
@@ -96,13 +96,13 @@ instance FromJSON WeatherInfo where
     dt  <- wi .: "dt"
     sys  <- wi .: "sys"
     timezone  <- wi .: "timezone"
-    id  <- wi .: "id"
+    cityId  <- wi .: "id"
     name  <- wi .: "name"
     cod  <- wi .: "cod"
     return WeatherInfo{..}
 
 
-recommendation :: Float -> Float -> String -> String
+recommendation :: Int -> Int -> String -> String
 recommendation minTemp maxTemp dayDescription
     | maxTemp >=25 && dayDescription == "clear sky" = "Don't forget your sunglasses and sunscreen!"
     | minTemp >= 20 && maxTemp >=25 = "Don't forget your sunglasses and sunscreen!"
@@ -114,13 +114,13 @@ weatherMsg  weatherInfo
     | dayDescription == "" = Left "Day description is an empty string."
     | city == "" = Left "City is an empty string."
     | recommendationMsg == "" = Left "Recommendation is an empty string."
-    | otherwise = Right $ "Today there will be " ++ dayDescription ++ " in " ++ city ++ "! The temperature is going from " ++ minTemp ++ "°C to " ++ maxTemp ++ "°C. " ++ recommendationMsg
+    | otherwise = Right $ "Today there will be " ++ dayDescription ++ " in " ++ city ++ "! The temperature is going from " ++ show minTemp ++ "°C to " ++ show maxTemp ++ "°C. " ++ recommendationMsg
     where
         dayDescription = description . head . weather $ weatherInfo
         city = name $ weatherInfo
-        minTemp = show . round . temp_min . mainWeather $ weatherInfo
-        maxTemp = show . round . temp_max . mainWeather $ weatherInfo
-        recommendationMsg = recommendation (read $ minTemp :: Float) (read $ maxTemp :: Float) dayDescription
+        minTemp = round . temp_min . mainWeather $ weatherInfo :: Int
+        maxTemp = round . temp_max . mainWeather $ weatherInfo :: Int
+        recommendationMsg = recommendation minTemp maxTemp dayDescription
 
 apiHost :: BC.ByteString
 apiHost = "api.openweathermap.org"

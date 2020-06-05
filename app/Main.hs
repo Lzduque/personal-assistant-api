@@ -1,6 +1,6 @@
 module Main where
 
-import Web.Scotty (scotty, get, json, param, text)
+import Web.Scotty (scotty, get, json)
 import Control.Monad.IO.Class (liftIO)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
@@ -49,7 +49,7 @@ main = do
       Just p -> read p :: Int
       Nothing -> 3000
     origin = case mport of
-      Just _ -> "https://lzduque.github.io"
+      Just _ -> "https://lzduque.github.io" :: String
       Nothing -> "http://localhost:3000"
     apiKey = case mapiKey of
       Just k -> BC.pack k
@@ -108,6 +108,3 @@ main = do
       let timeTomorrow = utcToZonedTime myTimezone newUtcTime
       let appointments = appointmentsMsg allAppointments timeNow timeTomorrow
       json appointments
-
--- addLocalTime :: NominalDiffTime -> LocalTime -> LocalTime
--- Data.Time.LocalTime zonedTimeToLocalTime
