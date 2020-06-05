@@ -110,6 +110,7 @@ main = hspec $ do
         let timeZone = edtTimeZone
         let greet = greeting (utcToZonedTime timeZone time)
         greet `shouldBe` "Good night, Leticia!"
+
   describe "weatherMsg" $ do
     it "returns the weather message for a city and the day given a weather info" $ do
         let weatherInfo = weatherMsg testWeatherInfo
@@ -120,6 +121,7 @@ main = hspec $ do
     it "returns an error message for a city and the day given a weather info" $ do
         let weatherInfo = weatherMsg emptyCity
         weatherInfo `shouldBe` Left "City is an empty string."
+
   describe "appointmentsMsg" $ do
     it "returns the appointments message for an user and a day" $ do
         let time = mkUTCTime (2020,6,5) (12, 0, 0)
@@ -127,8 +129,13 @@ main = hspec $ do
         let timeNow = utcToZonedTime timeZone time
         let appointments = appointmentsMsg testAppointments timeNow
         appointments `shouldBe` "Today you have 2 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00."
-  describe "appointmentsMsg" $ do
     it "returns the appointments message for an user and a day" $ do
+        let time = mkUTCTime (2020,6,7) (12, 0, 0)
+        let timeZone = edtTimeZone
+        let timeNow = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg testAppointments timeNow
+        appointments `shouldBe` "Today you have 1 appointment(s): Get package from post office at 10:00."
+    it "returns no appointments message for an user that has no appointments for that day" $ do
         let time = mkUTCTime (2020,6,6) (12, 0, 0)
         let timeZone = edtTimeZone
         let timeNow = utcToZonedTime timeZone time
