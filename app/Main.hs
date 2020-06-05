@@ -1,10 +1,7 @@
 module Main where
 
-import Web.Scotty (scotty, get, json)
+import Web.Scotty (scotty, get, json, param, text)
 import Control.Monad.IO.Class (liftIO)
-
-import Greeting (greeting)
-import Weather (weatherMsg, apiRequest, WeatherInfo)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
 import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
@@ -12,6 +9,10 @@ import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
 import Data.Aeson (eitherDecode)
 
+import Greeting (greeting)
+import Weather (weatherMsg, apiRequest, WeatherInfo)
+import Appointments (appointmentsMsg)
+import Lib (dateToday) 
 
 
 userLocal :: BC.ByteString
@@ -62,5 +63,16 @@ main = do
                     Right info -> do
                       json $ info
                 Left err -> json err
-          else 
-              liftIO $ print "request failed with error"
+        else 
+            liftIO $ print "request failed with error"
+    get "/appointments/:day" $ do
+      day <- param "day"
+      text $ "Day: " <> day
+      liftIO $ putStrLn "Get appointments for Today!"
+      if day == "today"
+        then do
+          timeNow <- liftIO $ getZonedTime
+          let appointments = appointmentsMsg timeNow
+          json appointments
+      else
+        liftIO $ print "request failed with error"
