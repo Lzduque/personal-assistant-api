@@ -4,12 +4,68 @@ import Test.Hspec
 import Data.Fixed (Pico(..))
 import Data.Time (UTCTime(..), fromGregorian, timeOfDayToTime, TimeOfDay(..), getCurrentTimeZone, getCurrentTime, utcToZonedTime, TimeZone(..))
 import Control.Monad.IO.Class (liftIO)
+import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather(..), Wind(..), Clouds(..), Sys(..))
+
+
 
 mkUTCTime :: (Integer, Int, Int) -> (Int, Int, Pico) -> UTCTime
 mkUTCTime (year, mon, day) (hour, min, sec) = UTCTime (fromGregorian year mon day) (timeOfDayToTime (TimeOfDay hour min sec))
 
 edtTimeZone :: TimeZone
 edtTimeZone = TimeZone (-240) True "EDT"
+
+emptyDescription = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, id = 6167865, name = "Toronto", cod = 200}
+
+emptyCity = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "mist", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, id = 6167865, name = "", cod = 200}
+
+testWeatherInfo =
+    WeatherInfo 
+        { coord =
+             Coord 
+                { lon = -79.42
+                , lat = 43.7}
+        , weather = 
+            [ Weather 
+                { weatherId = 701
+                , weatherMain = "Mist"
+                , description = "mist"
+                , icon = "50d"}
+            ]
+        , base = "stations"
+        , mainWeather = 
+            MainWeather 
+                { temp = 24.28
+                , feels_like = 27.4
+                , temp_min = 20.0
+                , temp_max = 27.78
+                , pressure = 1011
+                , humidity = 93
+                }
+        , visibility = 6437
+        , wind = 
+            Wind 
+                { speed = 3.1
+                , deg = 220
+                }
+        , clouds = 
+            Clouds 
+                { all = 40
+                }
+        , dt = 1591374423
+        , sys =
+            Sys 
+                { sysType = 1
+                , sysId = 941
+                , country = "CA"
+                , sunrise = 1591349827
+                , sunset = 1591404944
+                }
+        , timezone = -14400
+        , id = 6167865
+        , name = "Toronto"
+        , cod = 200
+        }
+
 
 main :: IO ()
 main = hspec $ do
@@ -30,3 +86,13 @@ main = hspec $ do
         let timeZone = edtTimeZone
         let greet = greeting (utcToZonedTime timeZone time)
         greet `shouldBe` "Good night, Leticia!"
+  describe "weatherMsg" $ do
+    it "returns the weather message for a city and the day given a weather info" $ do
+        let weatherInfo = weatherMsg testWeatherInfo
+        weatherInfo `shouldBe` Right "Today there will be mist in Toronto! The temperature is going from 20°C to 28°C. Don't forget your sunglasses and sunscreen!"
+    it "returns an error message for a city and the day given a weather info" $ do
+        let weatherInfo = weatherMsg emptyDescription
+        weatherInfo `shouldBe` Left "Day description is an empty string."
+    it "returns an error message for a city and the day given a weather info" $ do
+        let weatherInfo = weatherMsg emptyCity
+        weatherInfo `shouldBe` Left "City is an empty string."
