@@ -123,21 +123,17 @@ main = hspec $ do
         weatherInfo `shouldBe` Left "City is an empty string."
 
   describe "appointmentsMsg" $ do
-    it "returns the appointments message for an user and a day" $ do
+    it "returns the appointments message for an user today" $ do
         let time = mkUTCTime (2020,6,5) (12, 0, 0)
         let timeZone = edtTimeZone
-        let timeNow = utcToZonedTime timeZone time
-        let appointments = appointmentsMsg testAppointments timeNow
+        let queryTime = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg testAppointments queryTime queryTime
         appointments `shouldBe` "Today you have 2 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00."
-    it "returns the appointments message for an user and a day" $ do
-        let time = mkUTCTime (2020,6,7) (12, 0, 0)
+    it "returns no appointments message for an user that has no appointments for tomorrow" $ do
+        let timeToday = mkUTCTime (2020,6,5) (12, 0, 0)
         let timeZone = edtTimeZone
-        let timeNow = utcToZonedTime timeZone time
-        let appointments = appointmentsMsg testAppointments timeNow
-        appointments `shouldBe` "Today you have 1 appointment(s): Get package from post office at 10:00."
-    it "returns no appointments message for an user that has no appointments for that day" $ do
+        let todayTime = utcToZonedTime timeZone timeToday
         let time = mkUTCTime (2020,6,6) (12, 0, 0)
-        let timeZone = edtTimeZone
-        let timeNow = utcToZonedTime timeZone time
-        let appointments = appointmentsMsg testAppointments timeNow
-        appointments `shouldBe` "Today you have no external appointments scheduled!"
+        let queryTime = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg testAppointments todayTime queryTime 
+        appointments `shouldBe` "Tomorrow you have no external appointments scheduled!"
