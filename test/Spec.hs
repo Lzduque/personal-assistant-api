@@ -157,3 +157,8 @@ main = hspec $ do
         let queryTime = utcToZonedTime timeZone time
         let appointments = appointmentsMsg allAppointments (dateFromTime queryTime) 
         appointments `shouldBe` "You have 3 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00, Get package from post office at 10:00."
+    -- it "put changes to a specific appointment for an user" $ do
+    -- it "delete a specific appointment for an user" $ do
+    -- it "create a specific appointment for an user" $ do
+
+

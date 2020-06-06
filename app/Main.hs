@@ -1,6 +1,6 @@
 module Main where
 
-import Web.Scotty (scotty, get, json)
+import Web.Scotty (scotty, get, json, post, put, text, delete, param)
 import Control.Monad.IO.Class (liftIO)
 import System.Environment (lookupEnv)
 import Data.Time (getZonedTime)
@@ -116,3 +116,13 @@ main = do
       timeNow <- liftIO $ getZonedTime
       let appointments = appointmentsMsg allAppointments (dateFromTime timeNow)
       json appointments
+    put "/appointments/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Put changes to appointment!"
+    delete "/appointments/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Delete an appointment!"
+    post "/appointments" $ do
+      liftIO $ putStrLn "Post new appointment for user!"
