@@ -16,10 +16,10 @@ edtTimeZone :: TimeZone
 edtTimeZone = TimeZone (-240) True "EDT"
 
 emptyDescription :: WeatherInfo
-emptyDescription = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, id = 6167865, name = "Toronto", cod = 200}
+emptyDescription = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, cityId = 6167865, name = "Toronto", cod = 200}
 
 emptyCity :: WeatherInfo
-emptyCity = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "mist", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, id = 6167865, name = "", cod = 200}
+emptyCity = WeatherInfo {coord = Coord {lon = -79.42, lat = 43.7}, weather = [Weather {weatherId = 701, weatherMain = "Mist", description = "mist", icon = "50d"}], base = "stations", mainWeather = MainWeather {temp = 24.74, feels_like = 28.22, temp_min = 20.0, temp_max = 27.78, pressure = 1010, humidity = 94}, visibility = 9656, wind = Wind {speed = 3.1, deg = 190}, clouds = Clouds {all = 1}, dt = 1591375011, sys = Sys {sysType = 1, sysId = 941, country = "CA", sunrise = 1591349827, sunset = 1591404944}, timezone = -14400, cityId = 6167865, name = "", cod = 200}
 
 testWeatherInfo :: WeatherInfo
 testWeatherInfo =
@@ -65,13 +65,13 @@ testWeatherInfo =
                 , sunset = 1591404944
                 }
         , timezone = -14400
-        , id = 6167865
+        , cityId = 6167865
         , name = "Toronto"
         , cod = 200
         }
 
-testAppointments :: [Appointment]
-testAppointments = [
+todaysAppointments :: [Appointment]
+todaysAppointments = [
     Appointment
         { userID = "id_001"
         , name = "Family Doctor"
@@ -83,14 +83,11 @@ testAppointments = [
         , name = "Pick up medicine"
         , date = "2020-06-05"
         , time = "15:00"
-        }, 
-    Appointment
-        { userID = "id_001"
-        , name = "Get package from post office"
-        , date = "2020-06-07"
-        , time = "10:00"
         }
     ]
+
+tomorrowsAppintments :: [Appointment]
+tomorrowsAppintments = []
 
 
 
@@ -127,16 +124,8 @@ main = hspec $ do
 
   describe "appointmentsMsg" $ do
     it "returns the appointments message for an user today" $ do
-        let time = mkUTCTime (2020,6,5) (12, 0, 0)
-        let timeZone = edtTimeZone
-        let queryTime = utcToZonedTime timeZone time
-        let appointments = appointmentsMsg testAppointments queryTime queryTime
+        let appointments = appointmentsMsg todaysAppointments "Today"
         appointments `shouldBe` "Today you have 2 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00."
     it "returns no appointments message for an user that has no appointments for tomorrow" $ do
-        let timeToday = mkUTCTime (2020,6,5) (12, 0, 0)
-        let timeZone = edtTimeZone
-        let todayTime = utcToZonedTime timeZone timeToday
-        let time = mkUTCTime (2020,6,6) (12, 0, 0)
-        let queryTime = utcToZonedTime timeZone time
-        let appointments = appointmentsMsg testAppointments todayTime queryTime 
+        let appointments = appointmentsMsg tomorrowsAppintments "Tomorrow" 
         appointments `shouldBe` "Tomorrow you have no external appointments scheduled!"

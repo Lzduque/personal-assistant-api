@@ -14,7 +14,7 @@ import Data.Time.Clock (addUTCTime)
 import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
 import Appointments (appointmentsMsg, Appointment(..))
-
+import Lib (dateFromTime)
 
 userLocal :: BC.ByteString
 userLocal = "Toronto,CA"
@@ -39,6 +39,24 @@ allAppointments = [ Appointment
                                 , time = "10:00"
                                 }
                             ]
+
+todaysAppointments :: [Appointment]
+todaysAppointments = [ Appointment
+                                { userID = "id_001"
+                                , name = "Family Doctor"
+                                , date = "2020-06-05"
+                                , time = "13:30"
+                                }
+                            , Appointment
+                                { userID = "id_001"
+                                , name = "Pick up medicine"
+                                , date = "2020-06-05"
+                                , time = "15:00"
+                                }
+                            ]
+
+tomorrowsAppointments :: [Appointment]
+tomorrowsAppointments = []
 
 main :: IO ()
 main = do
@@ -95,16 +113,16 @@ main = do
       -- if day == "today"
         -- then do
       timeNow <- liftIO $ getZonedTime
-      let appointments = appointmentsMsg allAppointments timeNow timeNow
+      let appointments = appointmentsMsg todaysAppointments "Today"
       json appointments
       -- else
       --   liftIO $ print "request failed with error"
     get "/appointments/tomorrow" $ do
       liftIO $ putStrLn "Get appointments for Tomorrow!"
+      let appointments = appointmentsMsg tomorrowsAppointments "Tomorrow"
+      json appointments
+    get "/appointments" $ do
+      liftIO $ putStrLn "Get ALL appointments for user!"
       timeNow <- liftIO $ getZonedTime
-      let utcTime = zonedTimeToUTC timeNow
-      let newUtcTime = addUTCTime (24*60*60) utcTime
-      let ZonedTime _ myTimezone = timeNow
-      let timeTomorrow = utcToZonedTime myTimezone newUtcTime
-      let appointments = appointmentsMsg allAppointments timeNow timeTomorrow
+      let appointments = appointmentsMsg allAppointments (dateFromTime timeNow)
       json appointments

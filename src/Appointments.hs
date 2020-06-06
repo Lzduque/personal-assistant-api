@@ -17,28 +17,16 @@ data Appointment =
 
 
 
-appointmentsForDay :: [Appointment] -> ZonedTime -> [Appointment]
-appointmentsForDay appointments timeNow = filter (\a -> (date $ a) == day) appointments
-    where
-        day = dateFromTime timeNow
-
 formatAppointment :: Appointment -> String
-formatAppointment a = (name $ a) ++ " at " ++ (time $ a)
+formatAppointment Appointment {name, time} = name ++ " at " ++ time
 
-whatDay :: ZonedTime -> ZonedTime -> String
-whatDay timeNow time
-    | dateFromTime time == dateFromTime timeNow = "Today"
-    | otherwise = "Tomorrow"
-
-appointmentsMsg :: [Appointment] -> ZonedTime -> ZonedTime -> String
-appointmentsMsg allAppointments timeNow time
+appointmentsMsg :: [Appointment] -> String -> String
+appointmentsMsg allAppointments day
     | numOfAppointments == 0 = day ++ " you have no external appointments scheduled!"
     | otherwise = day ++ " you have " ++ (show $ numOfAppointments) ++ " appointment(s): " ++ as ++ "."
     where
-        day = whatDay timeNow time
-        dayAppointments = appointmentsForDay allAppointments time 
-        numOfAppointments = length dayAppointments
-        as = intercalate ", " $ map formatAppointment dayAppointments
+        numOfAppointments = length allAppointments
+        as = intercalate ", " $ map formatAppointment allAppointments
 
 
 
