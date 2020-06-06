@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bff84f6eaa9100c84925fb6dfc65981268649fbc0629413e672b2fbf9546f812
+-- hash: 4528bc73ced547fce0dd7bf0a134eb66608a8a9353c7c21589c3060595a56186
 
 name:           personal-assistant-api
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       Appointments
       Greeting
       Lib
+      ToDos
       Weather
   other-modules:
       Paths_personal_assistant_api

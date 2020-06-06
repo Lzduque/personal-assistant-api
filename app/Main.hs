@@ -12,7 +12,10 @@ import Data.Aeson (eitherDecode)
 import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
 import Appointments (appointmentsMsg, Appointment(..))
+import ToDos (toDosMsg, ToDo(..))
 import Lib (dateFromTime)
+
+
 
 userLocal :: BC.ByteString
 userLocal = "Toronto,CA"
@@ -40,21 +43,64 @@ allAppointments = [ Appointment
 
 todaysAppointments :: [Appointment]
 todaysAppointments = [ Appointment
-                                { userID = "id_001"
-                                , name = "Family Doctor"
-                                , date = "2020-06-05"
-                                , time = "13:30"
-                                }
-                            , Appointment
-                                { userID = "id_001"
-                                , name = "Pick up medicine"
-                                , date = "2020-06-05"
-                                , time = "15:00"
-                                }
-                            ]
+                                      { userID = "id_001"
+                                      , name = "Family Doctor"
+                                      , date = "2020-06-05"
+                                      , time = "13:30"
+                                      }
+                                  , Appointment
+                                      { userID = "id_001"
+                                      , name = "Pick up medicine"
+                                      , date = "2020-06-05"
+                                      , time = "15:00"
+                                      }
+                                  ]
 
 tomorrowsAppointments :: [Appointment]
 tomorrowsAppointments = []
+
+allToDos :: [ToDo]
+allToDos = [ ToDo
+                    { userID = "id_001"
+                    , name = "Clean Closet"
+                    , date = "2020-06-05"
+                    , time = "10:30"
+                    , completed = True
+                    }
+                , ToDo
+                    { userID = "id_001"
+                    , name = "Bake cookies"
+                    , date = "2020-06-05"
+                    , time = "14:00"
+                    , completed = False
+                    }
+                , ToDo
+                    { userID = "id_001"
+                    , name = "Organize bathroom cupboards"
+                    , date = "2020-06-07"
+                    , time = "10:00"
+                    , completed = False
+                    }
+                ]
+
+todaysToDos :: [ToDo]
+todaysToDos = [ ToDo
+                          { userID = "id_001"
+                          , name = "Clean Closet"
+                          , date = "2020-06-05"
+                          , time = "10:30"
+                          , completed = True
+                          }
+                      , ToDo
+                          { userID = "id_001"
+                          , name = "Bake cookies"
+                          , date = "2020-06-05"
+                          , time = "14:00"
+                          , completed = False
+                          }
+                      ]
+
+
 
 main :: IO ()
 main = do
@@ -79,10 +125,6 @@ main = do
         json greet
     get "/weather" $ do
         liftIO $ putStrLn "Sunny day!!"
-        -- liftIO $ putStrLn $ show apiKey
-        -- initReq <- parseRequest apiRequest
-        -- let req = initReq
-        -- liftIO $ print req
         response <- httpLBS $ apiRequest apiKey userLocal
         let status = getResponseStatusCode response
         liftIO $ print $ apiRequest apiKey userLocal
@@ -126,3 +168,23 @@ main = do
       liftIO $ putStrLn "Delete an appointment!"
     post "/appointments" $ do
       liftIO $ putStrLn "Post new appointment for user!"
+
+    get "/todos/today" $ do
+      liftIO $ putStrLn "Get todos for Today!"
+      let todos = toDosMsg todaysToDos "Today"
+      json todos
+    get "/todos" $ do
+      liftIO $ putStrLn "Get ALL todos for user!"
+      timeNow <- liftIO $ getZonedTime
+      let todos = toDosMsg allToDos (dateFromTime timeNow)
+      json todos
+    put "/todos/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Put changes to to do!"
+    delete "/todos/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Delete an to do!"
+    post "/todos" $ do
+      liftIO $ putStrLn "Post new to do for user!"
