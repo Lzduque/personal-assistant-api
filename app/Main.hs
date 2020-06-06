@@ -8,8 +8,6 @@ import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
 import Data.Aeson (eitherDecode)
-import Data.Time.LocalTime (zonedTimeToUTC, utcToZonedTime, ZonedTime(..))
-import Data.Time.Clock (addUTCTime)
 
 import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
@@ -106,17 +104,9 @@ main = do
         else 
             liftIO $ print "request failed with error"
     get "/appointments/today" $ do
-    -- get "/appointments/:day" $ do
-      -- day <- param "day"
-      -- text $ "Day: " <> day
       liftIO $ putStrLn "Get appointments for Today!"
-      -- if day == "today"
-        -- then do
-      timeNow <- liftIO $ getZonedTime
       let appointments = appointmentsMsg todaysAppointments "Today"
       json appointments
-      -- else
-      --   liftIO $ print "request failed with error"
     get "/appointments/tomorrow" $ do
       liftIO $ putStrLn "Get appointments for Tomorrow!"
       let appointments = appointmentsMsg tomorrowsAppointments "Tomorrow"

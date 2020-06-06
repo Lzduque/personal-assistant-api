@@ -1,6 +1,7 @@
 import Greeting (greeting)
 import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather(..), Wind(..), Clouds(..), Sys(..))
 import Appointments (appointmentsMsg, Appointment(..))
+import Lib (dateFromTime)
 
 
 import Test.Hspec
@@ -70,6 +71,27 @@ testWeatherInfo =
         , cod = 200
         }
 
+allAppointments :: [Appointment]
+allAppointments = [ Appointment
+                                { userID = "id_001"
+                                , name = "Family Doctor"
+                                , date = "2020-06-05"
+                                , time = "13:30"
+                                }
+                            , Appointment
+                                { userID = "id_001"
+                                , name = "Pick up medicine"
+                                , date = "2020-06-05"
+                                , time = "15:00"
+                                }
+                            , Appointment
+                                { userID = "id_001"
+                                , name = "Get package from post office"
+                                , date = "2020-06-07"
+                                , time = "10:00"
+                                }
+                            ]
+
 todaysAppointments :: [Appointment]
 todaysAppointments = [
     Appointment
@@ -129,3 +151,9 @@ main = hspec $ do
     it "returns no appointments message for an user that has no appointments for tomorrow" $ do
         let appointments = appointmentsMsg tomorrowsAppintments "Tomorrow" 
         appointments `shouldBe` "Tomorrow you have no external appointments scheduled!"
+    it "returns all appointments for an user" $ do
+        let time = mkUTCTime (2020,6,5) (12, 0, 0)
+        let timeZone = edtTimeZone
+        let queryTime = utcToZonedTime timeZone time
+        let appointments = appointmentsMsg allAppointments (dateFromTime queryTime) 
+        appointments `shouldBe` "You have 3 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00, Get package from post office at 10:00."
