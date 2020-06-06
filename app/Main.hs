@@ -170,8 +170,8 @@ main = do
       liftIO $ putStrLn "Post new appointment for user!"
 
     get "/todos/today" $ do
-      liftIO $ putStrLn "Get todos for Today!"
-      let todos = toDosMsg todaysToDos "Today"
+      liftIO $ putStrLn "Get todos for today!"
+      let todos = toDosMsg todaysToDos "today"
       json todos
     get "/todos" $ do
       liftIO $ putStrLn "Get ALL todos for user!"

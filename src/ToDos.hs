@@ -22,10 +22,8 @@ formatToDo ToDo {name, time} = name ++ " at " ++ time
 
 toDosMsg :: [ToDo] -> String -> String
 toDosMsg allToDos day
-    | day /= "Today" && day /= "Tomorrow" && numOfToDos == 0 = "You have no external To Do's scheduled!"
-    | day /= "Today" && day /= "Tomorrow" = "You have " ++ (show $ numOfToDos) ++ " To Do(s): " ++ as ++ "."
-    | numOfToDos == 0 = day ++ " you have no external To Do's scheduled!"
-    | otherwise = day ++ " you have " ++ (show $ numOfToDos) ++ " ToDo(s): " ++ as ++ "."
+    | numOfToDos == 0 = "You have no tasks for " ++ day ++ "!"
+    | otherwise = "Your tasks for " ++ day ++ ":" ++ "\n" ++ todos ++ "."
     where
         numOfToDos = length allToDos
-        as = intercalate ", " $ map formatToDo allToDos
+        todos = intercalate ", \n" $ map formatToDo allToDos
