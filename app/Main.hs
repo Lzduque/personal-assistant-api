@@ -59,6 +59,7 @@ todaysAppointments = [ Appointment
 tomorrowsAppointments :: [Appointment]
 tomorrowsAppointments = []
 
+-- all to dos from now on and past ones that are pending
 allToDos :: [ToDo]
 allToDos = [ ToDo
                     { userID = "id_001"
@@ -83,6 +84,7 @@ allToDos = [ ToDo
                     }
                 ]
 
+-- all to dos for today on and past ones that are pending
 todaysToDos :: [ToDo]
 todaysToDos = [ ToDo
                           { userID = "id_001"

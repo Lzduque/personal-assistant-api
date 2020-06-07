@@ -2,6 +2,7 @@ import Greeting (greeting)
 import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather(..), Wind(..), Clouds(..), Sys(..))
 import Appointments (appointmentsMsg, Appointment(..))
 import Lib (dateFromTime)
+import ToDos (toDosMsg, ToDo(..))
 
 
 import Test.Hspec
@@ -108,8 +109,49 @@ todaysAppointments = [
         }
     ]
 
-tomorrowsAppintments :: [Appointment]
-tomorrowsAppintments = []
+tomorrowsAppointments :: [Appointment]
+tomorrowsAppointments = []
+
+allToDos :: [ToDo]
+allToDos = [ ToDo
+                    { userID = "id_001"
+                    , name = "Clean Closet"
+                    , date = "2020-06-05"
+                    , time = "10:30"
+                    , completed = True
+                    }
+                , ToDo
+                    { userID = "id_001"
+                    , name = "Bake cookies"
+                    , date = "2020-06-05"
+                    , time = "14:00"
+                    , completed = False
+                    }
+                , ToDo
+                    { userID = "id_001"
+                    , name = "Organize bathroom cupboards"
+                    , date = "2020-06-07"
+                    , time = "10:00"
+                    , completed = False
+                    }
+                ]
+
+todaysToDos :: [ToDo]
+todaysToDos = [ ToDo
+                          { userID = "id_001"
+                          , name = "Clean Closet"
+                          , date = "2020-06-05"
+                          , time = "10:30"
+                          , completed = True
+                          }
+                      , ToDo
+                          { userID = "id_001"
+                          , name = "Bake cookies"
+                          , date = "2020-06-05"
+                          , time = "14:00"
+                          , completed = False
+                          }
+                      ]
 
 
 
@@ -149,7 +191,7 @@ main = hspec $ do
         let appointments = appointmentsMsg todaysAppointments "Today"
         appointments `shouldBe` "Today you have 2 appointment(s): Family Doctor at 13:30, Pick up medicine at 15:00."
     it "returns no appointments message for an user that has no appointments for tomorrow" $ do
-        let appointments = appointmentsMsg tomorrowsAppintments "Tomorrow" 
+        let appointments = appointmentsMsg tomorrowsAppointments "Tomorrow" 
         appointments `shouldBe` "Tomorrow you have no external appointments scheduled!"
     it "returns all appointments for an user" $ do
         let time = mkUTCTime (2020,6,5) (12, 0, 0)
@@ -160,5 +202,19 @@ main = hspec $ do
     -- it "put changes to a specific appointment for an user" $ do
     -- it "delete a specific appointment for an user" $ do
     -- it "create a specific appointment for an user" $ do
+
+  describe "toDosMsg" $ do
+    it "returns the toDos message for an user today" $ do
+        let toDos = toDosMsg todaysToDos "today"
+        toDos `shouldBe` "Your tasks for today are:\nClean Closet at 10:30, \nBake cookies at 14:00."
+    it "returns all toDos for an user" $ do
+        let time = mkUTCTime (2020,6,5) (12, 0, 0)
+        let timeZone = edtTimeZone
+        let queryTime = utcToZonedTime timeZone time
+        let toDos = toDosMsg allToDos (dateFromTime queryTime) 
+        toDos `shouldBe` "Your tasks are:\nClean Closet at 10:30, \nBake cookies at 14:00, \nOrganize bathroom cupboards at 10:00."
+    -- it "put changes to a specific toDo for an user" $ do
+    -- it "delete a specific toDo for an user" $ do
+    -- it "create a specific toDo for an user" $ do
 
 
