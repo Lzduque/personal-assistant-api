@@ -121,7 +121,6 @@ soonSpecialDates = [ SpecialDate
                                   }
                               ]
 
-
 allSpecialDates :: [SpecialDate]
 allSpecialDates = [ SpecialDate
                                 { userID = "id_001"

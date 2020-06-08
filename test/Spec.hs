@@ -3,11 +3,13 @@ import Weather (weatherMsg, WeatherInfo(..), Coord(..), Weather(..), MainWeather
 import Appointments (appointmentsMsg, Appointment(..))
 import Lib (dateFromTime)
 import ToDos (toDosMsg, ToDo(..))
+import SpecialDates (specialDatesMsg, SpecialDate(..), TypeOfDate(..), Notification(..))
 
 
 import Test.Hspec
 import Data.Fixed (Pico)
-import Data.Time (UTCTime(..), fromGregorian, timeOfDayToTime, TimeOfDay(..), utcToZonedTime, TimeZone(..))
+import Data.Time (UTCTime(..), fromGregorian, timeOfDayToTime, TimeOfDay(..), utcToZonedTime, TimeZone(..), getZonedTime)
+import Control.Monad.IO.Class (liftIO)
 
 
 
@@ -153,6 +155,47 @@ todaysToDos = [ ToDo
                           }
                       ]
 
+soonSpecialDates :: [SpecialDate]
+soonSpecialDates = [ SpecialDate
+                                  { userID = "id_001"
+                                  , name = "Dating Anniversary"
+                                  , originalDate = "2019-07-01"
+                                  , notification = OneMonth
+                                  , typeOfDate = Anniversary
+                                  }
+                              , SpecialDate
+                                  { userID = "id_001"
+                                  , name = "Tim's Birthday"
+                                  , originalDate = "1989-06-27"
+                                  , notification = OneMonth
+                                  , typeOfDate = Birthday
+                                  }
+                              ]
+
+allSpecialDates :: [SpecialDate]
+allSpecialDates = [ SpecialDate
+                                { userID = "id_001"
+                                , name = "Dating Anniversary"
+                                , originalDate = "2019-07-01"
+                                , notification = OneMonth
+                                , typeOfDate = Anniversary
+                                }
+                            , SpecialDate
+                                { userID = "id_001"
+                                , name = "Tim's Birthday"
+                                , originalDate = "1989-06-27"
+                                , notification = OneMonth
+                                , typeOfDate = Birthday
+                                }
+                            , SpecialDate
+                                { userID = "id_001"
+                                , name = "Mom's Birthday"
+                                , originalDate = "1963-08-31"
+                                , notification = OneMonth
+                                , typeOfDate = Birthday
+                                }
+                            ]
+
 
 
 main :: IO ()
@@ -216,5 +259,18 @@ main = hspec $ do
     -- it "put changes to a specific toDo for an user" $ do
     -- it "delete a specific toDo for an user" $ do
     -- it "create a specific toDo for an user" $ do
+
+  describe "specialDatesMsg" $ do
+    it "returns the special dates message for an user coming soon" $ do
+        timeNow <- liftIO $ getZonedTime
+        let specialDates = specialDatesMsg soonSpecialDates timeNow
+        specialDates `shouldBe` "Special dates coming up:\nDating Anniversary, 1 year(s) at 2019-07-01, \nTim's Birthday, 31 year(s) at 1989-06-27."
+    it "returns all special dates for an user" $ do
+        timeNow <- liftIO $ getZonedTime
+        let specialDates = specialDatesMsg allSpecialDates timeNow
+        specialDates `shouldBe` "Special dates coming up:\nDating Anniversary, 1 year(s) at 2019-07-01, \nTim's Birthday, 31 year(s) at 1989-06-27, \nMom's Birthday, 57 year(s) at 1963-08-31."
+    -- it "put changes to a specific specialDate for an user" $ do
+    -- it "delete a specific specialDate for an user" $ do
+    -- it "create a specific specialDate for an user" $ do
 
 

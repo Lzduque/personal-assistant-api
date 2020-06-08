@@ -32,7 +32,7 @@ getYear date = head $ splitOn "-" date
 formatSpecialDate :: ZonedTime -> SpecialDate -> String
 formatSpecialDate dateToday SpecialDate{name, originalDate, typeOfDate}
   | typeOfDate == Holiday = name ++ " at " ++ originalDate
-  | otherwise = name ++ ", " ++ diffYears ++ " year(s) " ++ " at " ++ originalDate
+  | otherwise = name ++ ", " ++ diffYears ++ " year(s)" ++ " at " ++ originalDate
   where
     originalYear = read (getYear originalDate) :: Int
     currentYear = read (yearFromTime dateToday) :: Int
