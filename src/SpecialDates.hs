@@ -4,7 +4,7 @@ import Data.Aeson (FromJSON,ToJSON)
 import GHC.Generics (Generic)
 import Data.List (intercalate)
 import Data.Time (ZonedTime(..))
-import Data.List.Split (splitOn, endsWith)
+import Data.List.Split (splitOn)
 
 import Lib (yearFromTime)
 

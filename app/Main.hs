@@ -205,12 +205,12 @@ main = do
       let appointments = appointmentsMsg allAppointments (dateFromTime timeNow)
       json appointments
     put "/appointments/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      appointmentsId <- param "id"
+      text $ "Id: " <> appointmentsId
       liftIO $ putStrLn "Put changes to appointment!"
     delete "/appointments/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      appointmentsId <- param "id"
+      text $ "Id: " <> appointmentsId
       liftIO $ putStrLn "Delete an appointment!"
     post "/appointments" $ do
       liftIO $ putStrLn "Post new appointment for user!"
@@ -225,12 +225,12 @@ main = do
       let todos = toDosMsg allToDos (dateFromTime timeNow)
       json todos
     put "/todos/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      todosId <- param "id"
+      text $ "Id: " <> todosId
       liftIO $ putStrLn "Put changes to to do!"
     delete "/todos/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      todosId <- param "id"
+      text $ "Id: " <> todosId
       liftIO $ putStrLn "Delete an to do!"
     post "/todos" $ do
       liftIO $ putStrLn "Post new to do for user!"
@@ -246,12 +246,12 @@ main = do
       let specialdates = specialDatesMsg allSpecialDates timeNow
       json specialdates
     put "/specialdates/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      specialdatesId <- param "id"
+      text $ "Id: " <> specialdatesId
       liftIO $ putStrLn "Put changes special date do!"
     delete "/specialdates/:id" $ do
-      id <- param "id"
-      text $ "Id: " <> id
+      specialdatesId <- param "id"
+      text $ "Id: " <> specialdatesId
       liftIO $ putStrLn "Delete an special date!"
     post "/specialdates" $ do
       liftIO $ putStrLn "Post new special date for user!"
