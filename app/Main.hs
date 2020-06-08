@@ -13,6 +13,7 @@ import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
 import Appointments (appointmentsMsg, Appointment(..))
 import ToDos (toDosMsg, ToDo(..))
+import SpecialDates (specialDatesMsg, SpecialDate(..), TypeOfDate(..), Notification(..))
 import Lib (dateFromTime)
 
 
@@ -87,20 +88,63 @@ allToDos = [ ToDo
 -- all to dos for today on and past ones that are pending
 todaysToDos :: [ToDo]
 todaysToDos = [ ToDo
-                          { userID = "id_001"
-                          , name = "Clean Closet"
-                          , date = "2020-06-05"
-                          , time = "10:30"
-                          , completed = True
-                          }
-                      , ToDo
-                          { userID = "id_001"
-                          , name = "Bake cookies"
-                          , date = "2020-06-05"
-                          , time = "14:00"
-                          , completed = False
-                          }
-                      ]
+                            { userID = "id_001"
+                            , name = "Clean Closet"
+                            , date = "2020-06-05"
+                            , time = "10:30"
+                            , completed = True
+                            }
+                        , ToDo
+                            { userID = "id_001"
+                            , name = "Bake cookies"
+                            , date = "2020-06-05"
+                            , time = "14:00"
+                            , completed = False
+                            }
+                        ]
+
+-- all special dates coming soon (in the notification period)
+soonSpecialDates :: [SpecialDate]
+soonSpecialDates = [ SpecialDate
+                                  { userID = "id_001"
+                                  , name = "Dating Anniversary"
+                                  , originalDate = "2019-07-01"
+                                  , notification = OneMonth
+                                  , typeOfDate = Anniversary
+                                  }
+                              , SpecialDate
+                                  { userID = "id_001"
+                                  , name = "Tim's Birthday"
+                                  , originalDate = "1989-06-27"
+                                  , notification = OneMonth
+                                  , typeOfDate = Birthday
+                                  }
+                              ]
+
+
+allSpecialDates :: [SpecialDate]
+allSpecialDates = [ SpecialDate
+                                { userID = "id_001"
+                                , name = "Dating Anniversary"
+                                , originalDate = "2019-07-01"
+                                , notification = OneMonth
+                                , typeOfDate = Anniversary
+                                }
+                            , SpecialDate
+                                { userID = "id_001"
+                                , name = "Tim's Birthday"
+                                , originalDate = "1989-06-27"
+                                , notification = OneMonth
+                                , typeOfDate = Birthday
+                                }
+                            , SpecialDate
+                                { userID = "id_001"
+                                , name = "Mom's Birthday"
+                                , originalDate = "1963-08-31"
+                                , notification = OneMonth
+                                , typeOfDate = Birthday
+                                }
+                            ]
 
 
 
@@ -147,6 +191,7 @@ main = do
                 Left err -> json err
         else 
             liftIO $ print "request failed with error"
+
     get "/appointments/today" $ do
       liftIO $ putStrLn "Get appointments for Today!"
       let appointments = appointmentsMsg todaysAppointments "Today"
@@ -190,3 +235,24 @@ main = do
       liftIO $ putStrLn "Delete an to do!"
     post "/todos" $ do
       liftIO $ putStrLn "Post new to do for user!"
+
+    get "/specialdates/soon" $ do
+      liftIO $ putStrLn "Get special dates coming soon!"
+      timeNow <- liftIO $ getZonedTime
+      let specialdates = specialDatesMsg soonSpecialDates timeNow
+      json specialdates
+    get "/specialdates" $ do
+      liftIO $ putStrLn "Get ALL special dates for user!"
+      timeNow <- liftIO $ getZonedTime
+      let specialdates = specialDatesMsg allSpecialDates timeNow
+      json specialdates
+    put "/specialdates/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Put changes special date do!"
+    delete "/specialdates/:id" $ do
+      id <- param "id"
+      text $ "Id: " <> id
+      liftIO $ putStrLn "Delete an special date!"
+    post "/specialdates" $ do
+      liftIO $ putStrLn "Post new special date for user!"

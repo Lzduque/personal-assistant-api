@@ -1,4 +1,4 @@
-module Lib (userName, userId, dateFromTime) where
+module Lib (userName, userId, dateFromTime, yearFromTime) where
 
 -- import Data.Time.Clock (getCurrentTime, utctDay)
 -- import Data.Time.Calendar (toGregorian)
@@ -17,3 +17,6 @@ userId = "id_001"
 
 dateFromTime :: ZonedTime -> String
 dateFromTime time = formatTime defaultTimeLocale "%Y-%m-%d" time
+
+yearFromTime :: ZonedTime -> String
+yearFromTime time = formatTime defaultTimeLocale "%Y" time
