@@ -8,6 +8,8 @@ import Network.HTTP.Simple (httpLBS, getResponseStatusCode, getResponseBody)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as BC
 import Data.Aeson (eitherDecode)
+import Database.PostgreSQL.Simple
+import Control.Applicative
 
 import Greeting (greeting)
 import Weather (weatherMsg, apiRequest, WeatherInfo)
@@ -20,6 +22,9 @@ import Lib (dateFromTime)
 
 userLocal :: BC.ByteString
 userLocal = "Toronto,CA"
+
+userID :: BC.ByteString
+userID = "id_001"
 
 allAppointments :: [Appointment]
 allAppointments = [ Appointment
@@ -166,7 +171,7 @@ main = do
         liftIO $ putStrLn "HI!!!!"
         -- liftIO takes greeting outside its Monad and puts it into the main Monad
         timeNow <- liftIO $ getZonedTime
-        let greet = greeting timeNow
+        let greet = greeting timeNow "Leticia"
         json greet
     get "/weather" $ do
         liftIO $ putStrLn "Sunny day!!"

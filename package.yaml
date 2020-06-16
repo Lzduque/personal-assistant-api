@@ -26,6 +26,7 @@ dependencies:
 - bytestring
 - http-conduit
 - aeson >= 1.4.6.0
+- postgresql-simple
 
 library:
   source-dirs: src

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8c582275c5e1f9222651be6f03b731a3e20eb9ac3e45b81fa5bc13a0b359ea14
+-- hash: 90b211a83a80ec54f8c6f88c77060b0c819989b08a85141de17a90a64a18bcc5
 
 name:           personal-assistant-api
 version:        0.1.0.0
@@ -44,6 +44,7 @@ library
     , base >=4.7 && <5
     , bytestring
     , http-conduit
+    , postgresql-simple
     , split
     , time
   default-language: Haskell2010
@@ -62,6 +63,7 @@ executable personal-assistant-api-exe
     , bytestring
     , http-conduit
     , personal-assistant-api
+    , postgresql-simple
     , scotty
     , split
     , time
@@ -83,6 +85,7 @@ test-suite personal-assistant-api-test
     , hspec
     , http-conduit
     , personal-assistant-api
+    , postgresql-simple
     , split
     , time
   default-language: Haskell2010
