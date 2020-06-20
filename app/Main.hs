@@ -152,6 +152,16 @@ allSpecialDates = [ SpecialDate
 
 
 
+hello :: IO Int
+hello = do
+  conn <- connectPostgreSQL ""
+  [Only i] <- query conn "select ? + ?" (40 :: Double, 2 :: Double)
+  return i
+
+userName :: Connection -> IO [String]
+userName c = query_ c "SELECT name FROM child"
+
+
 main :: IO ()
 main = do
   mport <- lookupEnv "PORT"
